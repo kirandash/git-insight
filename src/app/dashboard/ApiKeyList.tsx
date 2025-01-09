@@ -1,5 +1,25 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 type ApiKey = {
   id: string;
   name: string;
@@ -20,42 +40,67 @@ export function ApiKeyList({
   onDelete,
 }: Readonly<ApiKeyListProps>) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Your API Keys</h2>
-      {apiKeys.length === 0 ? (
-        <p className="text-gray-500">No API keys found. Create one above.</p>
-      ) : (
-        <div className="space-y-4">
-          {apiKeys.map((key) => (
-            <div
-              key={key.id}
-              className="border rounded-lg p-4 flex items-center justify-between"
-            >
-              <div>
-                <h3 className="font-medium">{key.name}</h3>
-                <p className="text-sm text-gray-500">
-                  Created: {new Date(key.createdAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm font-mono mt-1">{key.key}</p>
-              </div>
-              <div className="space-x-2">
-                <button
-                  onClick={() => onEdit(key)}
-                  className="px-3 py-1 text-sm border rounded-md hover:bg-gray-100"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDelete(key.id)}
-                  className="px-3 py-1 text-sm border rounded-md text-red-600 hover:bg-red-50"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Your API Keys</CardTitle>
+        <CardDescription>
+          Manage your API keys for accessing the platform.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {apiKeys.length === 0 ? (
+          <p className="text-muted-foreground">
+            No API keys found. Create one above.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {apiKeys.map((key) => (
+              <Card key={key.id}>
+                <CardContent className="pt-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">{key.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Created: {new Date(key.createdAt).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm font-mono mt-1">{key.key}</p>
+                  </div>
+                  <div className="space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(key)}
+                    >
+                      Edit
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm">
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete API Key</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete this API key? This
+                            action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => onDelete(key.id)}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

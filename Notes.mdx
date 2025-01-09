@@ -9,12 +9,34 @@
 
 ### 2 Add cursorrules
 
+### 3 Install all dependencies
+
+- shadcn/ui, lucide, zod
+
+```prompt.txt
+let's install shadcnui
+```
+
 ### 3 Add button on home page to direct to dashboard and add dashboard page starter code
 
 prompt used:
 
-```
+```prompt.txt
 Clean up the home page @page.tsx. And add just one button at center that redirects the user to the /dashboards route. The /dashboards page will serve as a dedicated dashboard for managing API keys. Implement a user interface on the dashboard page to support full CRUD operations (Create, Read, Update, Delete) for API keys. Ensure the design is user-friendly and follows standard UI/UX practices.
 ```
 
+```prompt.txt
+for @ApiKeyDashboard.tsx change interface to types
+```
+
 - Fix errors if composer fails to generate code properly
+
+ex:
+
+```prompt.txt
+let's update @ApiKeyForm.tsx @ApiKeyList.tsx and @ApiKeyDashboard.tsx to use shadcnui components rather than native input, btn etc
+```
+
+```prompt.txt
+in @ApiKeyForm.tsx we should not have an input for api key. the key should be auto generated. we only need the name for the key
+```
