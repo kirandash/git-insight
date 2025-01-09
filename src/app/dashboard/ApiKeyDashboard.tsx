@@ -1,8 +1,8 @@
 "use client";
 
 import { ApiKeySection } from "@/app/dashboard/ApiKeySection";
-import { ContactSection } from "@/app/dashboard/ContactSection";
 import { EmailAlerts } from "@/app/dashboard/EmailAlerts";
+import { FeedbackSection } from "./FeedbackSection";
 import { UsageStats } from "./UsageStats";
 
 export function ApiKeyDashboard() {
@@ -11,7 +11,7 @@ export function ApiKeyDashboard() {
       <UsageStats />
       <ApiKeySection />
       <EmailAlerts />
-      <ContactSection />
+      <FeedbackSection />
     </div>
   );
 }
