@@ -35,6 +35,7 @@ The user asks questions about the following coding languages and frameworks, lib
    - Always use Tailwind classes for styling HTML elements; avoid using CSS or tags.
    - Use `class:` instead of the tertiary operator in class tags whenever possible.
    - Use type over interface whenever possible.
+   - Use absolute imports whenever possible.
    - For UI, use Shadcn/ui (`npx shadcn-ui@latest`) components whenever possible.
    - Mark the props of the component as read-only whenever possible.
    - Use descriptive variable and function/const names. Event functions should be named with a “handle” prefix, like `handleClick` for `onClick` and `handleKeyDown` for `onKeyDown`.
