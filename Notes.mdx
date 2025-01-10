@@ -2,7 +2,7 @@
 
 ### 1 Setup
 
-- `npx create-next-app@latest`
+- `npx create-next-app@latest` use pnpm
 - `cd git-insight`
 - `npm run dev`
 - Optional: If you face any error during npm run dev ex: with code `EACCES` then run `sudo chmod -R 777 .`
@@ -72,3 +72,33 @@ also by default can we have two keys that are displayed in table on page load
 ```prompt.txt
 on clicking edit, the edit modal should launch  with the values pre filled as shown in design
 ```
+
+### 6 Integrate supabase and CRUD
+
+- create a supabase account
+- create a new project
+
+- create .env.local file
+
+```prompt.txt
+@ApiKeySection.tsx I want to connect the CRUD APIs ehre to a supabase database
+```
+
+- response:
+
+```SQL
+create table api_keys (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references auth.users(id) not null,
+  name text not null,
+  key text not null,
+  usage integer default 0,
+  limit text,
+  limit_enabled boolean default false,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+```
+
+- api key from: https://supabase.com/dashboard/project/pypwscdgfkrguzfkeusa/settings/api
+
+- if you don't want auth in the beginning you can disable RLS in supabase and CRUD will work

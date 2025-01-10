@@ -14,17 +14,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabaseClient";
 import { Check, Copy, Edit2, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ApiKey = {
   id: string;
   name: string;
   key: string;
   usage: number;
-  limit?: string;
-  limitEnabled?: boolean;
+  limit?: number;
+  limit_enabled?: boolean;
+  created_at?: string;
 };
 
 export function ApiKeySection() {
@@ -35,24 +37,33 @@ export function ApiKeySection() {
   const [limitEnabled, setLimitEnabled] = useState(false);
   const [editingKey, setEditingKey] = useState<ApiKey | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([
-    {
-      id: "default-1",
-      name: "default",
-      key: "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",
-      usage: 3,
-      limit: "1000",
-      limitEnabled: false,
-    },
-    {
-      id: "default-2",
-      name: "production",
-      key: "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",
-      usage: 0,
-      limit: "1000",
-      limitEnabled: true,
-    },
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+
+  useEffect(() => {
+    loadApiKeys();
+  }, []);
+
+  const loadApiKeys = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("api_keys")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setApiKeys(data || []);
+    } catch (error) {
+      console.error("Failed to load API keys:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to load API keys",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const generateApiKey = () => {
     const randomBytes = new Uint8Array(16);
@@ -60,58 +71,93 @@ export function ApiKeySection() {
     const key = Array.from(randomBytes)
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
-    return `tvly-${key}`;
+    return `git-insight-${key}`;
   };
 
   const handleEdit = (key: ApiKey) => {
     setEditingKey(key);
     setKeyName(key.name);
-    setUsageLimit(key.limit || "1000");
-    setLimitEnabled(key.limitEnabled || false);
+    setUsageLimit(key.limit?.toString() || "1000");
+    setLimitEnabled(key.limit_enabled || false);
     setDialogOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!keyName.trim()) return;
 
-    if (editingKey) {
-      // Update existing key
-      setApiKeys((prev) =>
-        prev.map((key) =>
-          key.id === editingKey.id
-            ? {
-                ...key,
-                name: keyName,
-                limit: usageLimit,
-                limitEnabled,
-              }
-            : key
-        )
-      );
-    } else {
-      // Create new key
-      const newKey: ApiKey = {
-        id: crypto.randomUUID(),
-        name: keyName,
-        key: generateApiKey(),
-        usage: 0,
-        limit: usageLimit,
-        limitEnabled,
-      };
-      setApiKeys((prev) => [...prev, newKey]);
-    }
+    try {
+      if (editingKey) {
+        const { error } = await supabase
+          .from("api_keys")
+          .update({
+            name: keyName,
+            limit: parseInt(usageLimit),
+            limit_enabled: limitEnabled,
+          })
+          .eq("id", editingKey.id);
 
-    // Reset form and close dialog
-    setKeyName("");
-    setUsageLimit("1000");
-    setLimitEnabled(false);
-    setEditingKey(null);
-    setDialogOpen(false);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("api_keys").insert({
+          name: keyName,
+          key: generateApiKey(),
+          usage: 0,
+          limit: parseInt(usageLimit),
+          limit_enabled: limitEnabled,
+        });
+
+        if (error) throw error;
+      }
+
+      await loadApiKeys();
+
+      setKeyName("");
+      setUsageLimit("1000");
+      setLimitEnabled(false);
+      setEditingKey(null);
+      setDialogOpen(false);
+
+      toast({
+        className: "bg-[#15803d] text-white border-0",
+        description: (
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4" />
+            {`API key successfully ${editingKey ? "updated" : "created"}`}
+          </div>
+        ),
+      });
+    } catch (error) {
+      console.error("API Key operation failed:", error);
+      toast({
+        variant: "destructive",
+        description: `Failed to ${editingKey ? "update" : "create"} API key`,
+      });
+    }
   };
 
-  const handleDeleteKey = (id: string) => {
-    setApiKeys((prev) => prev.filter((key) => key.id !== id));
+  const handleDeleteKey = async (id: string) => {
+    try {
+      const { error } = await supabase.from("api_keys").delete().eq("id", id);
+
+      if (error) throw error;
+
+      await loadApiKeys();
+      toast({
+        className: "bg-[#15803d] text-white border-0",
+        description: (
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4" /> API key successfully deleted
+          </div>
+        ),
+      });
+    } catch (error) {
+      console.error("Failed to delete API key:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to delete API key",
+      });
+    }
   };
 
   const toggleKeyVisibility = (id: string) => {
@@ -235,54 +281,64 @@ export function ApiKeySection() {
             <div className="col-span-2 text-right">OPTIONS</div>
           </div>
           <div className="border-t">
-            {apiKeys.map((apiKey) => (
-              <div
-                key={apiKey.id}
-                className="grid grid-cols-12 gap-4 p-4 items-center"
-              >
-                <div className="col-span-2 font-medium">{apiKey.name}</div>
-                <div className="col-span-1">{apiKey.usage}</div>
-                <div className="col-span-7 font-mono">
-                  {showKey[apiKey.id]
-                    ? apiKey.key
-                    : "•".repeat(apiKey.key.length)}
-                </div>
-                <div className="col-span-2 flex justify-end gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => toggleKeyVisibility(apiKey.id)}
-                  >
-                    {showKey[apiKey.id] ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleCopyKey(apiKey.key)}
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(apiKey)}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteKey(apiKey.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+            {loading ? (
+              <div className="p-4 text-center text-muted-foreground">
+                Loading API keys...
               </div>
-            ))}
+            ) : apiKeys.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">
+                No API keys found. Create one to get started.
+              </div>
+            ) : (
+              apiKeys.map((apiKey) => (
+                <div
+                  key={apiKey.id}
+                  className="grid grid-cols-12 gap-4 p-4 items-center"
+                >
+                  <div className="col-span-2 font-medium">{apiKey.name}</div>
+                  <div className="col-span-1">{apiKey.usage}</div>
+                  <div className="col-span-7 font-mono">
+                    {showKey[apiKey.id]
+                      ? apiKey.key
+                      : "•".repeat(apiKey.key.length)}
+                  </div>
+                  <div className="col-span-2 flex justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleKeyVisibility(apiKey.id)}
+                    >
+                      {showKey[apiKey.id] ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleCopyKey(apiKey.key)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(apiKey)}
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteKey(apiKey.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </CardContent>
