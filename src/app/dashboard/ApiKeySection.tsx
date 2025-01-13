@@ -144,7 +144,7 @@ export function ApiKeySection() {
 
       await loadApiKeys();
       toast({
-        className: "bg-[#15803d] text-white border-0",
+        className: "bg-[#dc2626] text-white border-0",
         description: (
           <div className="flex items-center gap-2">
             <Check className="h-4 w-4" /> API key successfully deleted
@@ -165,16 +165,44 @@ export function ApiKeySection() {
   };
 
   const handleCopyKey = async (key: string) => {
-    await navigator.clipboard.writeText(key);
-    toast({
-      className: "bg-[#15803d] text-white border-0",
-      description: (
-        <div className="flex items-center gap-2">
-          <Check className="h-4 w-4" /> Copied API Key to clipboard
-        </div>
-      ),
-      duration: 2000,
-    });
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(key);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = key;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand("copy");
+          textArea.remove();
+        } catch (err) {
+          console.error("Failed to copy text:", err);
+          throw err;
+        }
+      }
+
+      toast({
+        className: "bg-[#15803d] text-white border-0",
+        description: (
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4" /> Copied API Key to clipboard
+          </div>
+        ),
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error("Failed to copy:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to copy API key",
+      });
+    }
   };
 
   return (
