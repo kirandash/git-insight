@@ -9,7 +9,7 @@ export function DashboardHeader() {
     <header className="border-b">
       <div className="container mx-auto flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
-          <Image src="/logo.svg" alt="Logo" width={32} height={32} />
+          <Image src="/logo.png" alt="Logo" width={32} height={32} />
           <select className="bg-transparent text-sm">
             <option>Personal</option>
           </select>
