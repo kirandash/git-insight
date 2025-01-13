@@ -135,3 +135,16 @@ The file @ApiKeySection.tsx is chunky. It has a lot of logic and components in i
 ```
 
 - During refactor composer might not use correct extensions ex: .tsx, .ts etc. So make sure to check the file extension and use correct one. Also, you might want to add the hooks folder in tailwind.config.ts to compile the styles
+
+### 9 Protect route with API key verification
+
+- route: /playground
+  - it should call a 'validate-key' API to check if the key is valid
+  - if key is valid, then render the protected page
+  - if key is invalid, then show error toast
+
+```prompt.txt
+In the @sidebar.tsx file when user clicks on "API playground" link, it should take user to a new page /playground. The playground page will have a form to submit an api key and a button to submit the request.
+
+After the request is submitted, it should take user to the /protected route. And there we will validate that the key is indeed a valid api key. If the key is valid, then render the protected page and show a success toast with the message "Key is valid. /protected route is now accessible". If the key is invalid, then show error toast with the message "Key is invalid. Please enter a valid key".
+```

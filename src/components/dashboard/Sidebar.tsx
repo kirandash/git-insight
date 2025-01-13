@@ -28,22 +28,22 @@ const links: SidebarLink[] = [
   },
   {
     title: "Research Assistant",
-    href: "/dashboard/assistant",
+    href: "/assistant",
     icon: <MessageSquare className="h-4 w-4" />,
   },
   {
     title: "Research Reports",
-    href: "/dashboard/reports",
+    href: "/reports",
     icon: <FileText className="h-4 w-4" />,
   },
   {
     title: "API Playground",
-    href: "/dashboard/playground",
+    href: "/playground",
     icon: <Terminal className="h-4 w-4" />,
   },
   {
     title: "Invoices",
-    href: "/dashboard/invoices",
+    href: "/invoices",
     icon: <Receipt className="h-4 w-4" />,
   },
   {
