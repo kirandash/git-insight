@@ -156,3 +156,38 @@ show me the corresponding curl commands based on the screenshot for validate-key
 ```
 
 ### 11 Deploy to vercel
+
+### 12 Git Insight Project Overview
+
+- we will build an api ex: api/v1/git-insight
+- it will take a payload of "githubUrl" and return "summary" and "cool_facts" in response
+- the api should be only callable with a valid api key
+
+  - key: x-api-key
+  - value: git-insight-api-key
+  - add to: header
+
+- Additional features that might be useful in a real SaaS product:
+  - SSO login
+  - rate limiting
+  - counting API usage
+  - payment gateway
+
+### 13 Switch package manager from npm to yarn, Install langchain
+
+- we will use langchain for building our llm powered backend
+- npm might have some issues with langchain so prefer to use yarn
+
+```prompt.txt
+let's switch the package manager from npm to yarn
+```
+
+- `rm -rf node_modules package-lock.json`
+- `npm install -g yarn`
+- `yarn`
+
+- install langchain: https://js.langchain.com/docs/how_to/installation/
+
+- `yarn add langchain @langchain/core`
+- `yarn add @langchain/community`
+- `yarn add @langchain/openai`

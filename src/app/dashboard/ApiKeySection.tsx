@@ -25,7 +25,8 @@ export function ApiKeySection() {
 
   useEffect(() => {
     loadApiKeys();
-  }, [loadApiKeys]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const generateApiKey = () => {
     const randomBytes = new Uint8Array(16);
