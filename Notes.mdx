@@ -124,3 +124,14 @@ help me create a sidebar component that will be used in the dashboard page. As s
 ```prompt.txt
 Make sure the sidebar is hideable. Add a button to toggle the sidebar
 ```
+
+### 8 Review and refactor
+
+- It's a good practice to add unit and e2e tests to catch any breaking changes during refactor
+
+```prompt.txt
+I want to refactor my code.
+The file @ApiKeySection.tsx is chunky. It has a lot of logic and components in it and is 300+ lines. Although I want my components to be small and focused and less than 300 lines. Currently the file has the CRUD API fetching and the API Key related components. I want to split this file into smaller files so the code is more readable and maintainable.
+```
+
+- During refactor composer might not use correct extensions ex: .tsx, .ts etc. So make sure to check the file extension and use correct one. Also, you might want to add the hooks folder in tailwind.config.ts to compile the styles
