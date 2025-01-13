@@ -25,7 +25,7 @@ export function ApiKeySection() {
 
   useEffect(() => {
     loadApiKeys();
-  }, []);
+  }, [loadApiKeys]);
 
   const generateApiKey = () => {
     const randomBytes = new Uint8Array(16);
