@@ -267,7 +267,7 @@ When user signs in for the first time, add a new record in the users table in su
 
 - You might want to disable RLS for users table in supabase to make it easier to test (Not recommended for production)
 
-### 19 Landing page
+### 19 Landing page with Cursor Composer
 
 ```prompt.txt
 @page.tsx  Create a beautiful landing page for a github analyzer tool. It uses AI on github open source repository and generates a summary and cool facts about the repository.
@@ -278,3 +278,31 @@ Choose a color pallette that aligns with the design shared
 ```
 
 - lift "Blocks" from shadcn/ui into v0 and you can ask to repurpose it for a specific use case ex: recreate this block for API usage
+
+### 20 Better Landing page with v0, shadcn/ui, cursor composer
+
+- prompt v0
+
+  - to give you a layout of the page
+
+  ```prompt.txt (ideal with v0)
+  Build a Next.js landing page for a saas application called "Git Insight". The application uses AI on github open source repository and generates a summary and cool facts about the repository.
+
+  The landing page should be responsive and have a beautiful design.
+  It should have a Sign up / Login button and a pricing with a free tier.
+
+  Use shadcn/ui for the components
+  ```
+
+  ```prompt.text (mine with cursor composer)
+  The landing page is for a saas application called "Git Insight". Also the landing page should have a pricing section with a free tier
+
+  Use @shadcn/ui Kit components throught the page wherever possible
+  ```
+
+- step by step
+- install shadcn
+- configure shadcn components
+- integrate code
+
+- Inspired from theme: silicon
