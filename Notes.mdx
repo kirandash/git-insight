@@ -255,3 +255,14 @@ Follow the documentation from @AuthJS (NextAuth)
 ```prompt.txt
 create a redirect util "protectRoute" which we can then call in individual pages to see if a route is protected or not
 ```
+
+### 18 Authentication and DB
+
+- Create 'users' table in supabase
+- When user signs in for the first time, we will add a new DB record for the user
+
+```prompt.txt
+When user signs in for the first time, add a new record in the users table in supabase. the auth related files are @auth.ts and @route.ts . and supabase client is at @supabaseClient.ts
+```
+
+- You might want to disable RLS for users table in supabase to make it easier to test (Not recommended for production)

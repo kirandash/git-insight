@@ -1,6 +1,7 @@
 import { auth, signIn, signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut } from "lucide-react";
+import Image from "next/image";
 
 export default async function Home() {
   const session = await auth();
@@ -8,6 +9,18 @@ export default async function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-8">
       <div className="text-center space-y-4">
+        {session?.user?.image && (
+          <div className="flex justify-center mb-4">
+            <Image
+              src={session.user.image}
+              alt={session.user.name ?? "Profile picture"}
+              width={80}
+              height={80}
+              className="rounded-full border-2 border-primary"
+              priority
+            />
+          </div>
+        )}
         <h1 className="text-4xl font-bold">Welcome {session?.user?.name}</h1>
         {session ? (
           <p className="text-muted-foreground">You are signed in!</p>
