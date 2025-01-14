@@ -1,3 +1,4 @@
+import { createReadmeAnalysisChain } from "@/lib/chains/readmeAnalysisChain";
 import { supabase } from "@/lib/supabaseClient";
 import { NextResponse } from "next/server";
 
@@ -94,16 +95,22 @@ export async function POST(request: Request) {
     // 5. Fetch README content
     const readmeContent = await fetchReadmeContent(owner, repo);
 
-    // 6. Return the README content
+    console.log(readmeContent);
+
+    // 6. Analyze README using LangChain
+    const chain = createReadmeAnalysisChain();
+    const analysis = await chain.invoke({
+      readmeContent,
+    });
+
+    // 7. Return the analysis
     return NextResponse.json({
       repository: {
         owner,
         repo,
         url: githubUrl,
       },
-      readme: readmeContent,
-      summary: "Repository analysis pending implementation",
-      cool_facts: ["Feature coming soon"],
+      ...analysis,
     });
   } catch (error) {
     console.error(error);

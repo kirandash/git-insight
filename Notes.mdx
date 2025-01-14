@@ -207,3 +207,21 @@ let's switch the package manager from npm to yarn
 ```prompt.txt
 @route.ts Implement the logic to fetch the readme content of the github repository.
 ```
+
+### 16 Langchain integration for git-insight api
+
+```prompt.txt
+generate a langchain chain from @langchain-js that will get a prompt of "Summarize the readme content of the github repository" then inject the readmeContent to the prompt.
+
+The chain will invoke an llm and structure the output to a JSON object with the following fields:
+- summary: string
+- cool_facts: array of strings
+```
+
+- use the @docs to mention the langchain js docs
+
+- The api response from llms might not be in the correct format. So we need to use a parser to parse the output to the correct format. We will use zod to parse the output to the correct format.
+
+```prompt.txt
+use StructuredOutputParser and make the structured output strict with a zod schema
+```
