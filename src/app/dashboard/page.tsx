@@ -1,7 +1,10 @@
 import { DashboardHeader } from "@/app/dashboard/DashboardHeader";
+import { protectRoute } from "@/lib/auth/protect";
 import { ApiKeyDashboard } from "./ApiKeyDashboard";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  await protectRoute();
+
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />

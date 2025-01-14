@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SignOutButton } from "./SignOutButton";
 
 type SidebarLink = {
   title: string;
@@ -58,13 +59,13 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-col space-y-6 w-60 p-4">
+    <div className="flex flex-col h-full w-60 p-4">
       <div className="flex items-center gap-2 px-2">
         <img src="/logo.png" alt="Logo" className="h-8 w-8" />
         <span className="font-semibold text-xl">Git Insight</span>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1 flex-1">
         <div className="px-3 py-2">
           <div className="space-y-1">
             {links.map((link) => (
@@ -90,6 +91,8 @@ export function Sidebar() {
           </div>
         </div>
       </div>
+
+      <SignOutButton />
     </div>
   );
 }

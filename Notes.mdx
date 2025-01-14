@@ -233,3 +233,25 @@ https://js.langchain.com/docs/how_to/structured_output/#the-.withstructuredoutpu
 ```prompt.txt
 refactor the @readmeAnalysisChain.ts  to use the withStructuredOutput method @LangChain
 ```
+
+### 17 Authentication flow setup with next-auth, OAuth client, Secrets
+
+- install next-auth
+  - https://authjs.dev/
+  - `yarn add next-auth@beta`
+- create google cloud project
+- Create OAuth consent screen
+- Create OAuth Client
+- Create secrets and update in .env
+
+```prompt.txt
+On @page.tsx  implement the google SSO flow. Add a login button in @page.tsx
+
+Follow the documentation from @AuthJS (NextAuth)
+```
+
+- https://authjs.dev/getting-started/installation?framework=Next.js
+
+```prompt.txt
+create a redirect util "protectRoute" which we can then call in individual pages to see if a route is protected or not
+```
