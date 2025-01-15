@@ -28,15 +28,6 @@ export function ApiKeySection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const generateApiKey = () => {
-    const randomBytes = new Uint8Array(16);
-    crypto.getRandomValues(randomBytes);
-    const key = Array.from(randomBytes)
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-    return `git-insight-${key}`;
-  };
-
   const handleSubmit = async (formData: {
     name: string;
     usageLimit: string;
@@ -51,7 +42,6 @@ export function ApiKeySection() {
     } else {
       await createApiKey({
         name: formData.name,
-        key: generateApiKey(),
         usage: 0,
         limit: parseInt(formData.usageLimit),
         limit_enabled: formData.limitEnabled,

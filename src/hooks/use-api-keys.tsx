@@ -1,5 +1,6 @@
+"use client";
+
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabaseClient";
 import { ApiKey } from "@/types/api-keys";
 import { Check } from "lucide-react";
 import { useState } from "react";
@@ -12,12 +13,9 @@ export const useApiKeys = () => {
   const loadApiKeys = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("api_keys")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
+      const response = await fetch("/api/api-keys");
+      if (!response.ok) throw new Error("Failed to fetch");
+      const data = await response.json();
       setApiKeys(data || []);
     } catch (error) {
       console.error("Failed to load API keys:", error);
@@ -32,8 +30,12 @@ export const useApiKeys = () => {
 
   const createApiKey = async (keyData: Partial<ApiKey>) => {
     try {
-      const { error } = await supabase.from("api_keys").insert(keyData);
-      if (error) throw error;
+      const response = await fetch("/api/api-keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(keyData),
+      });
+      if (!response.ok) throw new Error("Failed to create");
 
       await loadApiKeys();
       showSuccessToast("created");
@@ -45,12 +47,12 @@ export const useApiKeys = () => {
 
   const updateApiKey = async (id: string, keyData: Partial<ApiKey>) => {
     try {
-      const { error } = await supabase
-        .from("api_keys")
-        .update(keyData)
-        .eq("id", id);
-
-      if (error) throw error;
+      const response = await fetch(`/api/api-keys/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(keyData),
+      });
+      if (!response.ok) throw new Error("Failed to update");
 
       await loadApiKeys();
       showSuccessToast("updated");
@@ -62,8 +64,10 @@ export const useApiKeys = () => {
 
   const deleteApiKey = async (id: string) => {
     try {
-      const { error } = await supabase.from("api_keys").delete().eq("id", id);
-      if (error) throw error;
+      const response = await fetch(`/api/api-keys/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete");
 
       await loadApiKeys();
       showSuccessToast("deleted", true);

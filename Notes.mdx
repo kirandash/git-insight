@@ -348,3 +348,43 @@ also add a button to the @ApiDemo.tsx section that will help us try the api. and
 ```prompt.txt
 in @route.ts also add support for lowercase "readme" while fetching readme content
 ```
+
+## REST APIs
+
+### 25 REST APIs for all the routes and Cursor Notepad
+
+- currently our db calls are being made on client side. We need to move them to server side
+
+- We will use Cursor Notepad feature to provide context for the current composer. .cursorrules gives context for the global composer. But if we want a bunch of context only for the current composer, we can use Cursor Notepad.
+  - It will be useful while fixing bugs or working on a PR etc.
+  - Add any high level context to the notepad so that the composer can use it
+- use .cursorrules for project wide context
+- use Cursor Notepad for small task level context ex: fixing a bug, working on a PR etc. Only for the current task
+
+### 26 Prompt Engineering for CRUD API
+
+Notepad (CRUD):
+
+```prompt.txt (Notepad)
+Implement a CRUD API for management API keys, the original code is in @use-api-keys.tsx
+For auth use NextAuth.js v5
+```
+
+```prompt.txt (Cursor Composer)
+I want you to:
+1.Move all the CRUD in @apiKeyOperations.js functionality to be under a REST endpoint which can only be invoked from an authenticated user. Make sure to implement also [id] endpoints
+
+2. All operations should work only for a specific user_id. You can get the user id from retrieving the email from the JWT and searching for its corresponding user in the Supabase DB.
+Use auth function on server side instead of getServersession
+3.remember to use @supabaseClient.js for Supabase interaction
+
+Use @NextJS  @CRUD and @AuthJS (NextAuth)
+```
+
+- Tip: Try to implement small features in a prompt. This will have more accuracy and will also be easier to review and debug.
+  - DO NOT try to implement a big feature in a single prompt.
+- Tip: Add some implementation details to the prompt ex: the dynamic route etc
+
+```prompt.txt
+currently the api key generation is on client side in @ApiKeySection.tsx can we move it to server side
+```
