@@ -1,4 +1,5 @@
 import { auth, signIn } from "@/auth";
+import { ApiDemo } from "@/components/ApiDemo";
 import { Header } from "@/components/Header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -160,6 +161,18 @@ export default async function Home() {
               </CardContent>
             </Card>
           </div>
+        </section>
+
+        {/* API Demo Section */}
+        <section className="container mx-auto px-4 py-20">
+          <h2 className="text-3xl font-bold text-center mb-4 text-white">
+            Try Our API
+          </h2>
+          <p className="text-gray-400 text-center mb-16 max-w-2xl mx-auto">
+            Experience the power of our API with this interactive demo. Modify
+            the request and see the response in real-time.
+          </p>
+          <ApiDemo />
         </section>
 
         {/* How It Works Section */}

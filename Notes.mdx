@@ -315,10 +315,30 @@ Hide the sidebar on mobile devices
 
 TODO: Fix the overflow issue on mobile devices
 
-### 22 Add coming soon info
+### 22 Add coming soon info to the landing page
 
 - add coming soon info to the landing page for enterprise section
 
 ```prompt.txt
 @page.tsx add coming soon info to the enterprise custom pricing section. make sure to add it in a nice way.
+```
+
+### 23 Add API demo component to the landing page
+
+```prompt.txt
+Add a new section with a new component to the landing page that will demo the API. I have attached a screenshot of the postman request.
+
+Please do create a new component file for this for better readability.
+
+By default, the demo should show the original request from the screenshot but let the user change the request and see the response.
+
+Also add a "Documentation" button to the demo component that will take the user to the documentation page.
+```
+
+```prompt.txt
+move the APIDemo section in @page.tsx before how it works
+```
+
+```prompt.txt
+also add a button to the @ApiDemo.tsx section that will help us try the api. and also on submit it should call the api and show the response. the api should be @route.ts
 ```
