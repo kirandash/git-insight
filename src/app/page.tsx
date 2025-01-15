@@ -58,6 +58,7 @@ export default async function Home() {
         "Custom integrations",
         "SLA guarantee",
       ],
+      comingSoon: true,
     },
   ];
 
@@ -234,7 +235,17 @@ export default async function Home() {
                   </Badge>
                 )}
                 <CardHeader>
-                  <CardTitle className="text-white">{plan.name}</CardTitle>
+                  <CardTitle className="text-white">
+                    {plan.name}
+                    {plan.comingSoon && (
+                      <Badge
+                        variant="secondary"
+                        className="ml-2 bg-gray-700 text-gray-300"
+                      >
+                        Coming Soon
+                      </Badge>
+                    )}
+                  </CardTitle>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-white">
                       {plan.price}
@@ -259,7 +270,16 @@ export default async function Home() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  {!session ? (
+                  {plan.comingSoon ? (
+                    <Button
+                      size="lg"
+                      className="w-full"
+                      variant="outline"
+                      disabled
+                    >
+                      Coming Soon
+                    </Button>
+                  ) : !session ? (
                     <form
                       className="w-full"
                       action={async () => {
