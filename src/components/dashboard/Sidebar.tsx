@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   ExternalLink,
@@ -9,6 +10,7 @@ import {
   MessageSquare,
   Receipt,
   Terminal,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -55,14 +57,29 @@ const links: SidebarLink[] = [
   },
 ];
 
-export function Sidebar() {
+type SidebarProps = {
+  onClose?: () => void;
+};
+
+export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
     <div className="flex flex-col h-full w-60 p-4">
-      <div className="flex items-center gap-2 px-2">
-        <img src="/logo.png" alt="Logo" className="h-8 w-8" />
-        <span className="font-semibold text-xl">Git Insight</span>
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="Logo" className="h-8 w-8" />
+          <span className="font-semibold text-xl">Git Insight</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={onClose}
+          aria-label="Close Sidebar"
+        >
+          <X className="h-5 w-5" />
+        </Button>
       </div>
 
       <div className="space-y-1 flex-1">

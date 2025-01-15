@@ -69,7 +69,7 @@ export function ApiKeyList({
 
   if (loading) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
+      <div className="p-4 text-sm text-muted-foreground">
         Loading API keys...
       </div>
     );
@@ -77,56 +77,83 @@ export function ApiKeyList({
 
   if (apiKeys.length === 0) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
+      <div className="p-4 text-sm text-muted-foreground">
         No API keys found. Create one to get started.
       </div>
     );
   }
 
   return (
-    <>
-      {apiKeys.map((apiKey) => (
+    <div className="divide-y">
+      {apiKeys.map((key) => (
         <div
-          key={apiKey.id}
-          className="grid grid-cols-12 gap-4 p-4 items-center"
+          key={key.id}
+          className="grid grid-cols-12 gap-4 p-4 text-sm items-center"
         >
-          <div className="col-span-2 font-medium">{apiKey.name}</div>
-          <div className="col-span-1">{apiKey.usage}</div>
-          <div className="col-span-7 font-mono">
-            {showKey[apiKey.id] ? apiKey.key : "•".repeat(apiKey.key.length)}
+          <div className="col-span-3 md:col-span-2 truncate" title={key.name}>
+            {key.name}
           </div>
-          <div className="col-span-2 flex justify-end gap-1">
+          <div className="col-span-2 md:col-span-1 text-muted-foreground">
+            {key.usage}
+          </div>
+          <div
+            className="col-span-5 md:col-span-7 font-mono text-muted-foreground truncate"
+            title={showKey[key.id] ? key.key : undefined}
+          >
+            {showKey[key.id]
+              ? key.key
+              : "•".repeat(Math.min(key.key.length, 32))}
+          </div>
+          <div className="col-span-2 flex justify-end gap-1 md:gap-2">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => toggleKeyVisibility(apiKey.id)}
+              onClick={() => toggleKeyVisibility(key.id)}
+              className="h-8 w-8"
+              title={showKey[key.id] ? "Hide API Key" : "Show API Key"}
             >
-              {showKey[apiKey.id] ? (
+              {showKey[key.id] ? (
                 <EyeOff className="h-4 w-4" />
               ) : (
                 <Eye className="h-4 w-4" />
               )}
+              <span className="sr-only">
+                {showKey[key.id] ? "Hide" : "Show"} API Key
+              </span>
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => handleCopyKey(apiKey.key)}
+              onClick={() => handleCopyKey(key.key)}
+              className="h-8 w-8"
+              title="Copy API Key"
             >
               <Copy className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => onEdit(apiKey)}>
-              <Edit2 className="h-4 w-4" />
+              <span className="sr-only">Copy</span>
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onDelete(apiKey.id)}
+              onClick={() => onEdit(key)}
+              className="h-8 w-8"
+              title="Edit API Key"
+            >
+              <Edit2 className="h-4 w-4" />
+              <span className="sr-only">Edit</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onDelete(key.id)}
+              className="h-8 w-8"
+              title="Delete API Key"
             >
               <Trash2 className="h-4 w-4" />
+              <span className="sr-only">Delete</span>
             </Button>
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 }

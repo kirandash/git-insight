@@ -100,23 +100,25 @@ export function ApiKeySection() {
           page.
         </div>
 
-        <div className="rounded-lg">
-          <div className="grid grid-cols-12 gap-4 p-4 text-sm font-medium text-muted-foreground">
-            <div className="col-span-2">NAME</div>
-            <div className="col-span-1">USAGE</div>
-            <div className="col-span-7">KEY</div>
-            <div className="col-span-2 text-right">OPTIONS</div>
-          </div>
-          <div className="border-t">
-            <ApiKeyList
-              apiKeys={apiKeys}
-              loading={loading}
-              onEdit={(key) => {
-                setEditingKey(key);
-                setDialogOpen(true);
-              }}
-              onDelete={deleteApiKey}
-            />
+        <div className="rounded-lg overflow-x-auto">
+          <div className="min-w-[800px]">
+            <div className="grid grid-cols-12 gap-4 p-4 text-sm font-medium text-muted-foreground">
+              <div className="col-span-3 md:col-span-2">NAME</div>
+              <div className="col-span-2 md:col-span-1">USAGE</div>
+              <div className="col-span-5 md:col-span-7">KEY</div>
+              <div className="col-span-2 text-right">OPTIONS</div>
+            </div>
+            <div className="border-t">
+              <ApiKeyList
+                apiKeys={apiKeys}
+                loading={loading}
+                onEdit={(key) => {
+                  setEditingKey(key);
+                  setDialogOpen(true);
+                }}
+                onDelete={deleteApiKey}
+              />
+            </div>
           </div>
         </div>
       </CardContent>
