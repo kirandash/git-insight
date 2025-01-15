@@ -21,38 +21,33 @@ const parseGitHubUrl = (url: string) => {
 // Helper function to fetch README content
 async function fetchReadmeContent(owner: string, repo: string) {
   try {
-    // First try to fetch the README.md
-    const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
-      {
-        headers: {
-          Accept: "application/vnd.github.v3.raw",
-          // Add GitHub token if you have rate limiting issues
-          // 'Authorization': `token ${process.env.GITHUB_TOKEN}`,
-        },
-      }
-    );
+    // Array of possible README file names to try
+    const readmeVariants = [
+      "README.md",
+      "README.mdx",
+      "readme.md",
+      "readme.mdx",
+    ];
 
-    if (!response.ok) {
-      // If README.md doesn't exist, try README.mdx
-      const mdxResponse = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/README.mdx`,
+    // Try each variant until we find one that works
+    for (const variant of readmeVariants) {
+      const response = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${variant}`,
         {
           headers: {
             Accept: "application/vnd.github.v3.raw",
+            // Add GitHub token if you have rate limiting issues
             // 'Authorization': `token ${process.env.GITHUB_TOKEN}`,
           },
         }
       );
 
-      if (!mdxResponse.ok) {
-        throw new Error("README not found");
+      if (response.ok) {
+        return await response.text();
       }
-
-      return await mdxResponse.text();
     }
 
-    return await response.text();
+    throw new Error("README not found");
   } catch (error) {
     throw new Error(`Failed to fetch README: ${error}`);
   }
