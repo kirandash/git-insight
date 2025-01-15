@@ -5,15 +5,16 @@ import { NextResponse } from "next/server";
 // GET single API key
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = await getCurrentUser();
 
     const { data, error } = await supabase
       .from("api_keys")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", userId)
       .single();
 
@@ -35,8 +36,9 @@ export async function GET(
 // PATCH update API key
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = await getCurrentUser();
     const keyData = await request.json();
@@ -45,7 +47,7 @@ export async function PATCH(
     const { data: existingKey } = await supabase
       .from("api_keys")
       .select("id")
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", userId)
       .single();
 
@@ -56,7 +58,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from("api_keys")
       .update(keyData)
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", userId)
       .select()
       .single();
@@ -76,8 +78,9 @@ export async function PATCH(
 // DELETE API key
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = await getCurrentUser();
 
@@ -85,7 +88,7 @@ export async function DELETE(
     const { data: existingKey } = await supabase
       .from("api_keys")
       .select("id")
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", userId)
       .single();
 
@@ -96,7 +99,7 @@ export async function DELETE(
     const { error } = await supabase
       .from("api_keys")
       .delete()
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", userId);
 
     if (error) throw error;
