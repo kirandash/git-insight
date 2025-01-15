@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ApiKey } from "@/types/api-keys";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 type ApiKeyFormProps = {
@@ -18,7 +19,7 @@ type ApiKeyFormProps = {
     name: string;
     usageLimit: string;
     limitEnabled: boolean;
-  }) => void;
+  }) => Promise<void>;
   onCancel: () => void;
 };
 
@@ -34,11 +35,18 @@ export function ApiKeyForm({
   const [limitEnabled, setLimitEnabled] = useState(
     editingKey?.limit_enabled || false
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!keyName.trim()) return;
-    onSubmit({ name: keyName, usageLimit, limitEnabled });
+    if (!keyName.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit({ name: keyName, usageLimit, limitEnabled });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -49,7 +57,7 @@ export function ApiKeyForm({
         </DialogTitle>
         <DialogDescription>
           {editingKey
-            ? "Enter a new limit for the API key."
+            ? "Edit the name or limit for the API key."
             : "Enter a name and limit for the new API key."}
         </DialogDescription>
       </DialogHeader>
@@ -63,7 +71,7 @@ export function ApiKeyForm({
             placeholder="Key Name"
             value={keyName}
             onChange={(e) => setKeyName(e.target.value)}
-            disabled={!!editingKey}
+            disabled={isSubmitting}
           />
         </div>
         <div className="space-y-2">
@@ -72,6 +80,7 @@ export function ApiKeyForm({
               id="limit"
               checked={limitEnabled}
               onCheckedChange={(checked) => setLimitEnabled(!!checked)}
+              disabled={isSubmitting}
             />
             <Label htmlFor="limit">Limit monthly usage*</Label>
           </div>
@@ -79,7 +88,7 @@ export function ApiKeyForm({
             type="number"
             value={usageLimit}
             onChange={(e) => setUsageLimit(e.target.value)}
-            disabled={!limitEnabled}
+            disabled={!limitEnabled || isSubmitting}
           />
           <p className="text-sm text-muted-foreground">
             *If the combined usage of all your keys exceeds your plan&apos;s
@@ -88,10 +97,26 @@ export function ApiKeyForm({
         </div>
       </div>
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
-        <Button type="submit">{editingKey ? "Save" : "Create"}</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {editingKey ? "Saving..." : "Creating..."}
+            </>
+          ) : editingKey ? (
+            "Save"
+          ) : (
+            "Create"
+          )}
+        </Button>
       </div>
     </form>
   );

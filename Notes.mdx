@@ -95,7 +95,8 @@ create table api_keys (
   usage integer default 0,
   limit text,
   limit_enabled boolean default false,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  user_id uuid references auth.users(id) not null
 );
 ```
 
@@ -387,4 +388,22 @@ Use @NextJS  @CRUD and @AuthJS (NextAuth)
 
 ```prompt.txt
 currently the api key generation is on client side in @ApiKeySection.tsx can we move it to server side
+```
+
+### 27 Improvements to the UI for CRUD API
+
+💡 Cursor Tips:
+
+- Press '/' to open additional options:
+  - To Reset the composer
+  - To Reference all Open Editors
+
+```prompt.txt
+key name should be editable
+```
+
+```prompt.txt
+when api is called, during loading state the form inputs should be disabled and button text should update to saving
+
+or feel free to implement if you have a better feature in mind for saving state
 ```
