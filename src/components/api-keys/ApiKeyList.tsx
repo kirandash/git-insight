@@ -96,8 +96,11 @@ export function ApiKeyList({
           <div className="col-span-2 md:col-span-1 text-muted-foreground">
             {key.usage}
           </div>
+          <div className="col-span-2 md:col-span-1 text-muted-foreground">
+            {key.limit_enabled ? key.limit : "∞"}
+          </div>
           <div
-            className="col-span-5 md:col-span-7 font-mono text-muted-foreground truncate"
+            className="col-span-3 md:col-span-6 font-mono text-muted-foreground truncate"
             title={showKey[key.id] ? key.key : undefined}
           >
             {showKey[key.id]
