@@ -465,3 +465,30 @@ can we move all the helper fns to the @utils folder
 ```prompt.txt
 can we also add the website and license info
 ```
+
+### 35 Composer Tip
+
+- Create new composer for new context and new task
+- (Optional - Not Important) For cleaner composer states, you can delete the old composer
+- Older LLMs had needle in haystack problem. So they were not able to generate code that was not in the context. But recent LLMs are capable of handling large amount of code in context.
+- But more context is not always better. It might lead to hallucinations. So use context wisely. Also it might be expensive and slow.
+
+## Final Sprint
+
+### 36 Improve API Playground page with git insight api call
+
+- Remove items from sidebar
+- Add a real api playground
+- Understand more about context
+
+```prompt.txt
+In Playground page @page.tsx  Currently the user is only able to test the api key and see if it is valid. give room for user to put also a github URL and then make a request to /git-insight @route.ts  api and show the results
+```
+
+```prompt.txt
+currently you have made github repository analysis dependent on the api key validation. let's make it independent. in repository analysis, add one more field for api key
+```
+
+```prompt.txt
+the page does not have any padding on mobile. please fix it. maybe apply the same padding @page.tsx has and @page.tsx has for consistency
+```

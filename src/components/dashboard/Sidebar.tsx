@@ -5,9 +5,7 @@ import { cn } from "@/lib/utils";
 import {
   ExternalLink,
   FileCode2,
-  FileText,
   LayoutDashboard,
-  MessageSquare,
   Receipt,
   Terminal,
   X,
@@ -29,16 +27,16 @@ const links: SidebarLink[] = [
     href: "/dashboard",
     icon: <LayoutDashboard className="h-4 w-4" />,
   },
-  {
-    title: "Research Assistant",
-    href: "/assistant",
-    icon: <MessageSquare className="h-4 w-4" />,
-  },
-  {
-    title: "Research Reports",
-    href: "/reports",
-    icon: <FileText className="h-4 w-4" />,
-  },
+  // {
+  //   title: "Research Assistant",
+  //   href: "/assistant",
+  //   icon: <MessageSquare className="h-4 w-4" />,
+  // },
+  // {
+  //   title: "Research Reports",
+  //   href: "/reports",
+  //   icon: <FileText className="h-4 w-4" />,
+  // },
   {
     title: "API Playground",
     href: "/playground",
