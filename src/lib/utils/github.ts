@@ -8,11 +8,17 @@ export type RepoStats = {
   defaultBranch: string;
   language: string;
   topics: string[];
-  license?: string;
   size: number;
   hasWiki: boolean;
   isArchived: boolean;
   createdAt: string;
+  homepage: string | null;
+  license: {
+    key: string;
+    name: string;
+    spdxId: string;
+    url: string;
+  } | null;
 };
 
 export type GitHubContributor = {
@@ -95,11 +101,19 @@ export async function fetchRepoStats(
     defaultBranch: data.default_branch,
     language: data.language,
     topics: data.topics || [],
-    license: data.license?.name,
     size: data.size,
     hasWiki: data.has_wiki,
     isArchived: data.archived,
     createdAt: data.created_at,
+    homepage: data.homepage,
+    license: data.license
+      ? {
+          key: data.license.key,
+          name: data.license.name,
+          spdxId: data.license.spdx_id,
+          url: data.license.url,
+        }
+      : null,
   };
 }
 
