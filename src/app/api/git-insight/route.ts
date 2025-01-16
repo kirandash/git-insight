@@ -1,5 +1,8 @@
 import { createReadmeAnalysisChain } from "@/lib/chains/readmeAnalysisChain";
-import { supabase } from "@/lib/supabaseClient";
+import {
+  incrementApiKeyUsage,
+  validateApiKeyAndRateLimit,
+} from "@/lib/utils/apiKeyValidation";
 import { NextResponse } from "next/server";
 
 // Helper function to parse GitHub URL
@@ -55,56 +58,25 @@ async function fetchReadmeContent(owner: string, repo: string) {
 
 export async function POST(request: Request) {
   try {
-    // 1. Extract API key from headers
-    const apiKey = request.headers.get("x-api-key");
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "API key is required" },
-        { status: 401 }
-      );
+    // 1. Validate API key and check rate limit
+    const apiKey = request.headers.get("x-api-key") ?? "";
+    const { isValid, error, keyData } = await validateApiKeyAndRateLimit(
+      apiKey
+    );
+
+    if (!isValid) {
+      return error;
     }
 
-    // 2. Validate API key and check rate limit
-    const { data: keyData, error: keyError } = await supabase
-      .from("api_keys")
-      .select("id, usage, limit, limit_enabled")
-      .eq("key", apiKey)
-      .single();
-
-    if (keyError || !keyData) {
-      return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
+    // 2. Increment usage counter
+    const { success, error: incrementError } = await incrementApiKeyUsage(
+      keyData!
+    );
+    if (!success) {
+      return incrementError;
     }
 
-    // Check rate limit if enabled
-    if (keyData.limit_enabled) {
-      const limit = parseInt(keyData.limit);
-      if (keyData.usage >= limit) {
-        return NextResponse.json(
-          {
-            error: "Rate limit exceeded",
-            usage: keyData.usage,
-            limit: limit,
-          },
-          { status: 429 }
-        );
-      }
-    }
-
-    // 3. Increment usage counter
-    const { error: updateError } = await supabase
-      .from("api_keys")
-      .update({ usage: keyData.usage + 1 })
-      .eq("id", keyData.id);
-
-    if (updateError) {
-      console.error("Failed to update usage count:", updateError);
-      return NextResponse.json(
-        { error: "Failed to update usage count" },
-        { status: 500 }
-      );
-    }
-
-    // 3. Extract and validate request body
+    // 3. Process the request and fetch GitHub data
     const { githubUrl } = await request.json();
     if (!githubUrl) {
       return NextResponse.json(
@@ -113,21 +85,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Parse GitHub URL
+    // 4. Parse GitHub URL and fetch README
     const { owner, repo } = parseGitHubUrl(githubUrl);
-
-    // 5. Fetch README content
     const readmeContent = await fetchReadmeContent(owner, repo);
 
-    console.log(readmeContent);
-
-    // 6. Analyze README using LangChain
+    // 5. Analyze README using LangChain
     const chain = createReadmeAnalysisChain();
     const analysis = await chain.invoke({
       readmeContent,
     });
 
-    // 7. Return the analysis
+    // 6. Return the analysis results
     return NextResponse.json({
       repository: {
         owner,
