@@ -64,15 +64,44 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Validate API key
+    // 2. Validate API key and check rate limit
     const { data: keyData, error: keyError } = await supabase
       .from("api_keys")
-      .select()
+      .select("id, usage, limit, limit_enabled")
       .eq("key", apiKey)
       .single();
 
     if (keyError || !keyData) {
       return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
+    }
+
+    // Check rate limit if enabled
+    if (keyData.limit_enabled) {
+      const limit = parseInt(keyData.limit);
+      if (keyData.usage >= limit) {
+        return NextResponse.json(
+          {
+            error: "Rate limit exceeded",
+            usage: keyData.usage,
+            limit: limit,
+          },
+          { status: 429 }
+        );
+      }
+    }
+
+    // 3. Increment usage counter
+    const { error: updateError } = await supabase
+      .from("api_keys")
+      .update({ usage: keyData.usage + 1 })
+      .eq("id", keyData.id);
+
+    if (updateError) {
+      console.error("Failed to update usage count:", updateError);
+      return NextResponse.json(
+        { error: "Failed to update usage count" },
+        { status: 500 }
+      );
     }
 
     // 3. Extract and validate request body

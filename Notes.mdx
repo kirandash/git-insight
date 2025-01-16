@@ -407,3 +407,31 @@ when api is called, during loading state the form inputs should be disabled and 
 
 or feel free to implement if you have a better feature in mind for saving state
 ```
+
+### 28 Fix build issue caused by dynamic route types
+
+```prompt.txt
+i am getting the error. and i found a solution here
+
+ @https://nextjs.org/docs/app/api-reference/file-conventions/route#context-optional
+
+please follow the solution and see if it can be correctly used to solve the type issue for this dynamic route
+```
+
+### 29 Adding Retaliating and Quota enforcement
+
+- we want to add rate limiting and quota enforcement
+  - so if user has used the api keys usage credits, we should not allow them to use the api
+- use the usage column
+
+```prompt.txt
+I want you to implement rate limiting protection to /git-insightAPI in @route.js.
+
+I want each time a user invokes a certain API key, to increment the API key usage column of the corresponding API key in Supabase.
+
+I want you then to check if the usage is lower than the limit of the API key.
+
+If it is larger, you should return in the response a 429 and that there is a rate limit.
+```
+
+### 30 Refactor git-insight route
