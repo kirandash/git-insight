@@ -136,8 +136,11 @@ export default function PlaygroundPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-8">API Playground</h1>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-semibold">API Playground</h1>
+        <p className="text-sm text-muted-foreground">Pages / API Playground</p>
+      </div>
 
       <div className="space-y-8">
         <Card>

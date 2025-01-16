@@ -1,15 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
   ExternalLink,
   FileCode2,
   LayoutDashboard,
   Receipt,
+  Rocket,
+  Settings,
   Terminal,
   X,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "./SignOutButton";
@@ -61,9 +71,10 @@ type SidebarProps = {
 
 export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   return (
-    <div className="flex flex-col h-full w-60 p-4">
+    <div className="flex flex-col h-full w-72 p-4">
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-2">
           <img src="/logo.png" alt="Logo" className="h-8 w-8" />
@@ -107,7 +118,63 @@ export function Sidebar({ onClose }: SidebarProps) {
         </div>
       </div>
 
-      <SignOutButton />
+      {/* User Profile Section */}
+      {session?.user && (
+        <div className="mt-auto pt-4 border-t">
+          <div className="flex items-center gap-3 p-2">
+            {session.user.image ? (
+              <Image
+                src={session.user.image}
+                alt="Profile"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                <span className="text-secondary-foreground text-sm">
+                  {session.user.name?.[0] || session.user.email?.[0]}
+                </span>
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">
+                {session.user.name}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {session.user.email}
+              </p>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  aria-label="User settings"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/my-plans
+                    "
+                    className="flex items-center w-full gap-2"
+                  >
+                    <Rocket className="h-4 w-4" />
+                    Manage Plan
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <SignOutButton />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
