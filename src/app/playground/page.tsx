@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Code } from "@/components/ui/code";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -224,66 +225,82 @@ export default function PlaygroundPage() {
         </Card>
 
         {analysisResult && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Analysis Results</CardTitle>
-              <CardDescription>
-                Repository: {analysisResult.repository.owner}/
-                {analysisResult.repository.repo}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex gap-4">
-                <Badge variant="secondary">
-                  ⭐ {analysisResult.repository.stats.stars} stars
-                </Badge>
-                <Badge variant="secondary">
-                  🍴 {analysisResult.repository.stats.forks} forks
-                </Badge>
-                <Badge variant="secondary">
-                  👀 {analysisResult.repository.stats.watchers} watchers
-                </Badge>
-              </div>
-
-              {analysisResult.summary && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Summary</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {analysisResult.summary}
-                  </p>
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>Analysis Results</CardTitle>
+                <CardDescription>
+                  Repository: {analysisResult.repository.owner}/
+                  {analysisResult.repository.repo}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex gap-4">
+                  <Badge variant="secondary">
+                    ⭐ {analysisResult.repository.stats.stars} stars
+                  </Badge>
+                  <Badge variant="secondary">
+                    🍴 {analysisResult.repository.stats.forks} forks
+                  </Badge>
+                  <Badge variant="secondary">
+                    👀 {analysisResult.repository.stats.watchers} watchers
+                  </Badge>
                 </div>
-              )}
 
-              {analysisResult.mainFeatures && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Main Features</h3>
-                  <ul className="list-disc list-inside text-sm text-muted-foreground">
-                    {analysisResult.mainFeatures.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                {analysisResult.summary && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Summary</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {analysisResult.summary}
+                    </p>
+                  </div>
+                )}
 
-              {analysisResult.technicalComplexity && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Technical Complexity</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {analysisResult.technicalComplexity}
-                  </p>
-                </div>
-              )}
+                {analysisResult.mainFeatures && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Main Features</h3>
+                    <ul className="list-disc list-inside text-sm text-muted-foreground">
+                      {analysisResult.mainFeatures.map((feature, index) => (
+                        <li key={index}>{feature}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-              {analysisResult.recommendedAudience && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Recommended Audience</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {analysisResult.recommendedAudience}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                {analysisResult.technicalComplexity && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Technical Complexity</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {analysisResult.technicalComplexity}
+                    </p>
+                  </div>
+                )}
+
+                {analysisResult.recommendedAudience && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Recommended Audience</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {analysisResult.recommendedAudience}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Raw Response</CardTitle>
+                <CardDescription>
+                  The raw JSON response from the API
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Code language="json" className="w-full overflow-auto">
+                  {JSON.stringify(analysisResult, null, 2)}
+                </Code>
+              </CardContent>
+            </Card>
+          </>
         )}
       </div>
     </div>
